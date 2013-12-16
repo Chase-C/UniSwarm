@@ -383,7 +383,7 @@ Engine.prototype =
             for(i = 0; i < this.particles.length; i++) {
                 this.particles[i].selected = false;
             }
-        } else if(evt.button == 1) {
+        } else if(evt.button == 1 || evt.button == 2) {
             this.rmouseButton = true;
         }
     },
@@ -392,7 +392,7 @@ Engine.prototype =
     {
         if(evt.button == 0) {
             this.lmouseButton = false;
-        } else if(evt.button == 1) {
+        } else if(evt.button == 1 || evt.button == 2) {
             this.rmouseButton = false;
         }
     },
