@@ -100,7 +100,7 @@ Particle.prototype =
         // Thanks javascript, it only took 4 hours to figure out
         for(j = 0; j < neighbors.length; j++) {
             if(neighbors[j] != this) {
-                if(neighbors[j].hashR != undefined) {
+                if(neighbors[j].hashR) {
                     avoidIndex = j;
                 } else {
                     var dv = neighbors[j].posVector().subtract(this.posVector()).scale(0.16);
@@ -117,8 +117,6 @@ Particle.prototype =
                             noAttack = false;
                             seek.add(dv);
                         }
-                    } else {
-                        console.log('error, bitch');
                     }
                 }
             }

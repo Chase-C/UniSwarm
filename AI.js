@@ -101,7 +101,7 @@ AI.prototype =
         if(this.homePlanet) {
             this.totalParticles += this.homePlanet.reserve;
             // Jump ship
-            if(!this.homePlanet.growing && (this.homePlanet.r < this.homePlanet.maxR * 0.75)) {
+            if(!this.homePlanet.growing && (this.homePlanet.r < this.homePlanet.maxR * 0.7)) {
                 this.wantParticle = true;
             } else {
                 // Check if we should release some particles

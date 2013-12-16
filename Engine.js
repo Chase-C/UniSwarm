@@ -23,7 +23,7 @@ var Engine = function(w, h)
     this.focusPlanet = null;
 
     this.particles = [];
-    this.freq = 450;
+    this.freq = 250;
 
     this.updateMask = false;
 
@@ -61,14 +61,14 @@ Engine.prototype =
         if(this.lmouseButton && this.player1Planet != null && this.focusPlanet == this.player1Planet) {
             if(this.player1Planet.releaseReady(dt)) {
                 this.addParticleFromPlanet(this.player1Planet);
-                this.freq = this.freq.toString();
+                /*this.freq = this.freq.toString();
                 Sound.instSound(this.freq);
-                this.freq += 40;
+                this.freq += 20;*/
             }
         }
 
-        if(this.freq > 450)
-            this.freq -= 20;
+        if(this.freq > 250)
+            this.freq -= 10;
 
         // Update each planet
         for(i = 0; i < this.planets.length; i++) {
@@ -140,21 +140,23 @@ Engine.prototype =
                             // Add units to your home planet
                             if(this.particles[i].owner == planet.owner) {
                                 planet.reserve++;
-                                // Remove untis from enemy or neutral planet
+                            // Remove untis from enemy or neutral planet
                             } else {
                                 planet.reserve--;
                                 if(planet.reserve < 0) {
                                     planet.unsetPlayerPlanet();
                                     if(this.particles[i].owner == 1) {
-                                        this.player2Planet = null;
-                                        this.ai.homePlanet = null;
+                                        if(planet == this.player2Planet) {
+                                            this.player2Planet = null;
+                                            this.ai.homePlanet = null;
+                                        }
                                         if(!this.player1Planet) {
                                             this.player1Planet = planet;
                                             planet.setPlayer1Planet();
-                                            console.log('yerp');
                                         }
                                     } else {
-                                        this.player1Planet = null;
+                                        if(planet == this.player1Planet)
+                                            this.player1Planet = null;
                                         if(!this.player2Planet) {
                                             this.player2Planet = planet;
                                             planet.setPlayer2Planet();

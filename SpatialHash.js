@@ -75,6 +75,9 @@ SpatialHash.prototype =
     {
         var sPos = this.hash(val);
 
+        var planet;
+        var enemy = false;
+
         var objs = [];
         for(p = -1; p < 2; p++) {
             var sx = (sPos.x + p) % this.cw;
@@ -84,11 +87,21 @@ SpatialHash.prototype =
                 if(sy < 0) sy = this.ch + sy;
                 for(k = 0; k < this.array[sx][sy].length; k++) {
                     if(this.array[sx][sy][k].hashR != undefined)
-                        return [this.array[sx][sy][k]];
+                        planet = this.array[sx][sy][k];
+                    else if(val.owner != this.array[sx][sy][k].owner)
+                        enemy = true;
+
                     objs.push(this.array[sx][sy][k]);
                 }
             }
         }
+        if(planet) {
+            if(enemy)
+                objs.push(planet);
+            else
+                return [planet];
+        }
+
         return objs;
     },
 
