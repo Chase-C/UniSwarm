@@ -42,6 +42,11 @@ Color.prototype =
         return new Color(232, 64, 116);
     },
 
+    Orange: function()
+    {
+        return new Color(232, 116, 0);
+    },
+
     Yellow: function()
     {
         return new Color(224, 224, 0);

@@ -176,7 +176,11 @@ Particle.prototype =
     // Draw the particle
     draw: function(canvas)
     {
-        canvas.fillStyle = this.color.toString();
+        if(this.selected)
+            canvas.fillStyle = this.color.Orange().toString();
+        else
+            canvas.fillStyle = this.color.toString();
+
         canvas.beginPath();
         canvas.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
         canvas.closePath();
