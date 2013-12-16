@@ -20,13 +20,12 @@ var Engine = function(w, h)
 
     this.ai = new AI(this.player2Planet);
 
+    this.particles = [];
+
+    this.freq = 250;
     this.focusPlanet = null;
 
-    this.particles = [];
-    this.freq = 250;
-
     this.updateMask = false;
-
     this.running = true;
     this.time = Date.now();
 
@@ -35,6 +34,8 @@ var Engine = function(w, h)
     this.mr = 30;
     this.lmouseButton = false;
     this.rmouseButton = false;
+
+    this.winner = 0;
 }
 
 Engine.prototype =
@@ -42,6 +43,9 @@ Engine.prototype =
     // Update the simulation each frame
     update: function()
     {
+        if(this.winner > 0) {
+            return;
+        }
         var currTime = Date.now();
         var dt = currTime - this.time;
 
@@ -86,8 +90,15 @@ Engine.prototype =
             this.removePlayerPlanet(this.player1Planet);
         }
 
+        var playerUnits = 0;
+        var aiUnits = 0;
         // Update each particle
         for(i = 0; i < this.particles.length; i++) {
+            if(this.particles[i].owner == 1)
+                playerUnits++;
+            else
+                aiUnits++;
+
             if(this.updateMask ^ (i & 1) || this.particles[i].state == 1) { // State 1 = attacking
                 var neighbors = this.hash.wideSearch(this.particles[i]);
                 // Check collisions with enemy particles
@@ -208,6 +219,16 @@ Engine.prototype =
                 }
             }
         }
+
+        if(this.player1Planet)
+            playerUnits += this.player1Planet.reserve;
+        if(this.player2Planet)
+            aiUnits += this.player2Planet.reserve;
+
+        if(aiUnits == 0)
+            this.winner = 1;
+        else if(playerUnits == 0)
+            this.winner = 2;
 
         // Update the spatial hash
         this.hash.update();
@@ -395,6 +416,16 @@ Engine.prototype =
 
         //this.drawHash(canvas);
         this.drawMouse(canvas);
+        if(this.winner > 0) {
+            canvas.fillStyle = (new Color(128, 128, 128)).toString();
+            canvas.font = '48px sans-serif';
+            canvas.textBaseline = 'middle';
+            canvas.textAlign = 'center';
+            if(this.winner == 1)
+                canvas.fillText('You Win!', this.w / 2, this.h / 2);
+            else
+                canvas.fillText('You Lose! :(', this.w / 2, this.h / 2);
+        }
     },
 
     // Draw the mouse circle thing
