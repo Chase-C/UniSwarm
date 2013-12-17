@@ -11,7 +11,7 @@ document.onmouseup = function(evt)
 }
 
 document.addEventListener('keydown', function(event) {
-     /*switch(event.keyCode) {
+     switch(event.keyCode) {
         case 80:
             if(engine.running == true) {
                 engine.running = false;
@@ -29,7 +29,7 @@ document.addEventListener('keydown', function(event) {
         case 83:
             engine.toggleSound();
             break;
-    } */
+    }
 });
 
 document.addEventListener('mousemove', function(event) {

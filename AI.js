@@ -17,6 +17,8 @@ Group.prototype =
                 j--;
             }
         }
+        if(this.particles.length <= 0)
+            console.log('removed');
     },
 
     updatePos: function()
@@ -33,9 +35,14 @@ Group.prototype =
 
     updateTarget: function()
     {
-        for(j = 0; j < this.particles.length; j++) {
-            if(this.target)
-                this.particles[j].tp = this.target;
+        if(this.target) {
+            for(j = 0; j < this.particles.length; j++) {
+                this.particles[j].state = 0;
+                if(!this.homePlanet || this.target.owner == 1)
+                    this.particles[j].tp = this.target;
+                else
+                    this.particles[j].tp = new Vector(this.target.x, this.target.y);
+            }
         }
     }
 }
@@ -67,6 +74,8 @@ AI.prototype =
         particle.color = (new Color(0, 0, 0)).Blue();
         if(this.currGroup)
             this.currGroup.particles.push(particle);
+        else
+            console.log('wtf');
     },
 
     update: function(planets, playerPlanet)
@@ -77,6 +86,8 @@ AI.prototype =
         // Update groups
         for(i = 0; i < this.groups.length; i++) {
             var group = this.groups[i];
+            var target = group.target;
+            group.updatePos();
             group.checkRemoved();
 
             this.freeParticles += group.particles.length;
@@ -84,7 +95,7 @@ AI.prototype =
                 this.groups[i] = this.groups[this.groups.length - 1];
                 this.groups.pop();
                 i--;
-            } else if(!group.target || (!group.target.growing && (group.target.r < group.target.maxR / 2))) {
+            } else if(!target || target.remove || (!target.growing && (target.r < target.maxR / 2))) {
                 if(group.target)
                     group.target.p2Circling -= group.particles.length;
 
@@ -92,6 +103,8 @@ AI.prototype =
                 if(group.target) {
                     group.target.p2Circling += group.particles.length;
                     group.updateTarget();
+                } else if(this.homePlanet) {
+                    group.target = this.homePlanet;
                 }
             }
         }
@@ -103,11 +116,14 @@ AI.prototype =
             // Jump ship
             if(!this.homePlanet.growing && (this.homePlanet.r < this.homePlanet.maxR * 0.7)) {
                 this.wantParticle = true;
+                if(!this.currGroup)
+                    this.currGroup = new Group();
             } else {
                 // Check if we should release some particles
                 if(!this.wantParticle && (this.homePlanet.reserve > Math.max(10, (this.homePlanet.r * 0.5) * 1.5))) {
                     this.wantParticle = true;
-                    this.currGroup = new Group();
+                    if(!this.currGroup)
+                        this.currGroup = new Group();
                 } else if(this.wantParticle && (this.homePlanet.reserve < Math.max(2, this.homePlanet.r / 3))) {
                     this.wantParticle = false;
                     if(this.currGroup) {
@@ -143,7 +159,7 @@ AI.prototype =
         group.updatePos();
 
         for(j = 0; j < planets.length; j++) {
-            if(planets[j] != this.homePlanet) {
+            if(planets[j] != this.homePlanet && planets[j] != group.target) {
                 var newFit = this.dist(group, planets[j]) - (0.5 * planets[j].r)
                     + (10 * (planets[j].p2Circling - planets[j].p1Circling));
 
@@ -186,10 +202,6 @@ AI.prototype =
         }
 
         if(planet) {
-            for(i = 0; i < group.particles.length; i++) {
-                group.particles[i].state = 0;
-                group.particles[i].tp = planet;
-            }
             this.homeGroup = group;
             this.homeGroup.target = planet;
             planet.p2Circling += group.particles.length;

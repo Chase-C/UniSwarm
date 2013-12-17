@@ -379,11 +379,13 @@ var Th=new (function() { //may get a single option object argument
             chanew=[];
             for(ci=0; ci<charef.length; ci++) {
                 chanew.push([]);
-                for(ai=0; ai<charef[ci].length; ai++) {
-                    val=( prmnor.type=="number" ? prmnor.value : this._.calcAdvance(prmnor.value,ai/charef[ci].length) );
-                    chanew[ci].push(Math.floor(val*charef[ci][ai]));
+                if(charef[ci]) {
+                    for(ai=0; ai<charef[ci].length; ai++) {
+                        val=( prmnor.type=="number" ? prmnor.value : this._.calcAdvance(prmnor.value,ai/charef[ci].length) );
+                        chanew[ci].push(Math.floor(val*charef[ci][ai]));
                     }
                 }
+            }
             return chanew;
             },           
         noise:function(prm, charef) {

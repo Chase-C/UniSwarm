@@ -3,21 +3,22 @@ Th.init();
 
 var Sound =
 {
-    sineFunc: function(si, len, frq, chn, opt)
+    bloopFunc: function(si, len, frq, chn, opt)
     {
         var fad = (len - si) / len;
         // The sine function that produces the sound
-        return Math.floor(fad * 128 * 256 * (
+        return 0.3 * Math.floor(fad * 128 * 256 * (
                     Math.sin(2.0 * Math.PI * frq * si / 44100)));
+        //return Math.floor(fad * 128 * 256 * (
+        //            Math.sin(2.0 * Math.PI * frq * si / 44100)));
     },
 
-    instSound: function(frq)
+    playSound: function(frq, vol)
     {
-        if(Th.Inst.get("InstSound") == null) {
-            Th.Inst.create("InstSound", this.sineFunc);
-        }
+        var sound = Th.Sound.get(frq.toString());
+        if(!sound)
+            sound = Th.Sound.create(frq.toString(), this.bloopFunc, {duration: .12, freq: frq});
 
-        // Play the sound
-        Th.Inst.get("InstSound").getSound(frq).play();
+        sound.play();
     }
 };

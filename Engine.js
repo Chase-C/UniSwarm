@@ -18,11 +18,15 @@ var Engine = function(w, h)
         this.player2Planet = this.planets[Math.floor(Math.random() * this.planets.length)];
     this.player2Planet.setPlayer2Planet();
 
+    this.player1Planet.reserve = 25;
+    this.player2Planet.reserve = 25;
+
     this.ai = new AI(this.player2Planet);
 
     this.particles = [];
 
-    this.freq = 250;
+    this.fillFreq = 250;
+    this.releaseFreq = 250;
     this.focusPlanet = null;
 
     this.updateMask = false;
@@ -43,9 +47,9 @@ Engine.prototype =
     // Update the simulation each frame
     update: function()
     {
-        if(this.winner > 0) {
+        if(this.winner > 0)
             return;
-        }
+
         var currTime = Date.now();
         var dt = currTime - this.time;
 
@@ -65,14 +69,13 @@ Engine.prototype =
         if(this.lmouseButton && this.player1Planet != null && this.focusPlanet == this.player1Planet) {
             if(this.player1Planet.releaseReady(dt)) {
                 this.addParticleFromPlanet(this.player1Planet);
-                /*this.freq = this.freq.toString();
-                Sound.instSound(this.freq);
-                this.freq += 20;*/
+                //Sound.playSound(this.releaseFreq, 50);
+                //this.releaseFreq += 16;
             }
         }
 
-        if(this.freq > 250)
-            this.freq -= 10;
+        if(this.releaseFreq > 250)
+            this.releaseFreq -= 1;
 
         // Update each planet
         for(i = 0; i < this.planets.length; i++) {
