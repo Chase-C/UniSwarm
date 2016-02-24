@@ -1,7 +1,7 @@
 UniSwarm
 ========
 
-A minimalistic RTS game created from the Ludum Dare 28.
+A minimalistic RTS game created in 2 days for the Ludum Dare 28.
 
 You control one planet among many as well as all the units it produces.   
 Here's how to play:
